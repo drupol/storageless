@@ -18,24 +18,16 @@
 
 declare(strict_types=1);
 
-namespace PSR7SessionsTest\Storageless\Asset;
+namespace PSR7Sessions\Storageless\Service;
 
-use Dflydev\FigCookies\SetCookie;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use PSR7Sessions\Storageless\Session\SessionInterface;
 
-/**
- * A mutable implementation of {@see SetCookie}, used to demonstrate
- * safety invariants of the {@see SessionMiddleware} internals.
- */
-final class MutableBadCookie extends SetCookie
+interface SessionStorage
 {
-    public bool $mutated = false;
+    public function appendSession(SessionInterface $session, ServerRequestInterface $request, ResponseInterface|null $response = null, RequestHandlerInterface|null $handler = null): ResponseInterface;
 
-    public function __toString(): string
-    {
-        if ($this->mutated) {
-            return 'Cookie: was mutated';
-        }
-
-        return parent::__toString();
-    }
+    public function getSession(ServerRequestInterface $request): SessionInterface;
 }
